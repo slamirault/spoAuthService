@@ -11,8 +11,12 @@ import java.util.List;
  */
 public class UserRepository implements IUserRepository
 {
-    @Autowired
     JdbcTemplate jdbcTemplate;
+
+    public UserRepository(JdbcTemplate jdbcTemplate)
+    {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public User findUserByEmail(String email)

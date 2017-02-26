@@ -1,8 +1,5 @@
 package authService.Utility;
 
-/**
- * Created by Stevie on 2/26/2017.
- */
 public enum Messages
 {
     NONE(null),

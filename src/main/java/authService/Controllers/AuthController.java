@@ -1,12 +1,13 @@
 package authService.Controllers;
 
-
 import authService.Models.Action;
 import authService.Utility.Messages;
 import authService.Utility.PasswordManager;
 import domain.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class AuthController
 {
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     /*
      * Just a test method to test the server
      */
@@ -79,7 +83,7 @@ public class AuthController
 
     public boolean findUser(String email, String password)
     {
-        UserRepository userRepo = new UserRepository();
+        UserRepository userRepo = new UserRepository(jdbcTemplate);
         PasswordManager pm = new PasswordManager();
 
         User user = userRepo.findUserByEmail(email);
@@ -101,7 +105,7 @@ public class AuthController
 
     public boolean setNewUser(String email, String pwd)
     {
-        UserRepository userRepo = new UserRepository();
+        UserRepository userRepo = new UserRepository(jdbcTemplate);
         PasswordManager pm = new PasswordManager();
 
         String encodedPwd = pm.encodePassword(pwd);

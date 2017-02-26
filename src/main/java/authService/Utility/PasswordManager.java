@@ -2,9 +2,6 @@ package authService.Utility;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-/**
- * Created by Stevie on 2/26/2017.
- */
 public class PasswordManager
 {
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
