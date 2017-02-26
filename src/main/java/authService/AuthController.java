@@ -58,7 +58,7 @@ public class AuthController
     public boolean findUser(String email, String password)
     {
 
-        String sql = "SELECT * FROM sys.user_data WHERE email = '" + email + "'";
+        String sql = "SELECT * FROM user_data WHERE email = '" + email + "'";
         List<User> users = jdbcTemplate.query(sql, new UserRowMapper());
 
 
@@ -102,7 +102,7 @@ public class AuthController
 
     public void setNewUser(String email, String pwd)
     {
-        String sql = "INSERT INTO sys.user_data VALUES (null,'%s','%s');";
+        String sql = "INSERT INTO user_data VALUES (null,'%s','%s');";
         jdbcTemplate.update(String.format(sql,email,encodePassword(pwd)));
     }
 
