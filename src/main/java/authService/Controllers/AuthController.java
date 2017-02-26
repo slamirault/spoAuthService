@@ -25,7 +25,7 @@ public class AuthController
     /*
      * Just a get method to poke the server
      */
-    @RequestMapping("/health")
+    @RequestMapping(value={"/", "/health"})
     public Action health()
     {
         return new Action(true, Messages.HEALTH.getName());
