@@ -23,8 +23,7 @@ Base URL: https://amirault-auth-service.herokuapp.com/
 			6) at least 8 characters
 	c) Replies with the following HTTP Status Codes:
 		i) 201 - Created! The submitted email and password were added to the database
-		ii) 4?? - Creation failed! Invalid email or password
-		iii) 4?? - Creation failed! User exists in DB
+		ii) 400 - Creation failed! Invalid email or password
 	d) On success, users will be added to the database
 	
 2. /auth (POST)

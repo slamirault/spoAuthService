@@ -67,6 +67,7 @@ public class AuthController
         }
         else
         {
+            response.setStatus(HttpServletResponse.SC_CREATED);
             return new Action(true,"Created");
         }
     }
