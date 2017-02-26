@@ -58,8 +58,9 @@ public class AuthController
     public boolean findUser(String email, String password)
     {
 
-        String sql = "SELECT email, pass FROM user_data WHERE email = '" + email + "'";
-        List<User> users = jdbcTemplate.query(sql, new UserRowMapper());
+        String sql = "SELECT email, pass FROM user_data WHERE email = ?";
+
+        List<User> users = jdbcTemplate.query(sql, new Object[] { email }, new UserRowMapper());
 
 
         if (users != null && users.size() != 0)
@@ -102,8 +103,10 @@ public class AuthController
 
     public void setNewUser(String email, String pwd)
     {
-        String sql = "INSERT INTO user_data (id, email,pass) VALUES (DEFAULT,'%s','%s');";
-        jdbcTemplate.update(String.format(sql,email,encodePassword(pwd)));
+        String sql = "INSERT INTO user_data (id, email,pass) VALUES (DEFAULT,?,?);";
+
+        String encodedPwd = encodePassword(pwd);
+        jdbcTemplate.update(sql,new Object[]{email,encodedPwd});
     }
 
 
