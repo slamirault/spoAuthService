@@ -34,6 +34,7 @@ dependencies {
     compile("org.springframework.security:spring-security-crypto:4.2.1.RELEASE")
     compile("commons-dbcp:commons-dbcp:1.2.2")
 
+    testCompile("org.easymock:easymock:3.4")
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile("junit:junit:4.11")
 }
