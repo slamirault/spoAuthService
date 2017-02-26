@@ -102,7 +102,7 @@ public class AuthController
 
     public void setNewUser(String email, String pwd)
     {
-        String sql = "INSERT INTO user_data VALUES (null,'%s','%s');";
+        String sql = "INSERT INTO user_data VALUES ('%s','%s');";
         jdbcTemplate.update(String.format(sql,email,encodePassword(pwd)));
     }
 

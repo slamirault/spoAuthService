@@ -37,3 +37,5 @@ gradle-app.setting
 
 #DB configuration
 application.properties
+
+.idea/workspace.xml
