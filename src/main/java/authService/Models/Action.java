@@ -1,4 +1,4 @@
-package authService;
+package authService.Models;
 
 public class Action
 {
