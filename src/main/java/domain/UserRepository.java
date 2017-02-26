@@ -6,9 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
-/**
- * Created by Stevie on 2/26/2017.
- */
 public class UserRepository implements IUserRepository
 {
     JdbcTemplate jdbcTemplate;

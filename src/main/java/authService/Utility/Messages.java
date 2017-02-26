@@ -9,7 +9,7 @@ public enum Messages
     CREATE_FAIL_EML("Creation failed; Invalid email"),
     CREATE_FAIL_PWD("Creation failed; Invalid password"),
     CREATE_SUCCESS("Creation success!"),
-    TEST("Hello, world!");
+    HEALTH("Hello, world! I am running! :)");
 
     private String name;
 

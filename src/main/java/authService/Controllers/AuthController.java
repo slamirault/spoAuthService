@@ -23,12 +23,12 @@ public class AuthController
     JdbcTemplate jdbcTemplate;
 
     /*
-     * Just a test method to test the server
+     * Just a get method to poke the server
      */
-    @RequestMapping("/test")
-    public Action test()
+    @RequestMapping("/health")
+    public Action health()
     {
-        return new Action(true, Messages.TEST.getName());
+        return new Action(true, Messages.HEALTH.getName());
     }
 
     @RequestMapping(value="/create", method = RequestMethod.POST)
