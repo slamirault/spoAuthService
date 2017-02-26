@@ -1,7 +1,7 @@
 CREATE TABLE user_data (
-  userId SERIAL NOT NULL,
+  id SERIAL NOT NULL,
   email varchar(100) NOT NULL,
   pass varchar(140) NOT NULL,
-  PRIMARY KEY (userId)
+  PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX ON user_data(email);
