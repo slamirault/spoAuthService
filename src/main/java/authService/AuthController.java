@@ -1,10 +1,6 @@
 package authService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.lang.Object;
 
 
@@ -12,7 +8,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import domain.User;
 import domain.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,43 +16,79 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class AuthController
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-    private static final String template = "Hello, %s!";
-    private static final String postTemplate = "Authentication is %s";
-
-    @RequestMapping("/auth")
-    public Auth auth(@RequestParam(value = "name", defaultValue = "World") String name)
+    /**
+     * Just a test method to test the server
+     * @return
+     */
+    @RequestMapping("/test")
+    public Action test()
     {
-        return new Auth(true, String.format(template, name));
+        return new Action(true, "Hello, world!");
     }
 
     @RequestMapping(value="/create", method = RequestMethod.POST)
-    public Auth create(@RequestParam String email, @RequestParam String password)
+    public Action create(@RequestParam String email, @RequestParam String password,
+                         HttpServletRequest request, HttpServletResponse response)
     {
-        setNewUser(email,password);
+        if (!validateEmail(email))
+        {
+            /*
+               if either the email address entered or password don't meet
+               the standards given of them, don't even call the DB
+             */
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return new Action(false,"Invalid email");
+        }
+        else {
+            if (!validatePassword(password))
+            {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return new Action(false,"Invalid password");
+            }
+        }
 
-        return new Auth(true,"Created");
+        boolean userCreated = setNewUser(email,password);
+
+        if (!userCreated)
+        {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return new Action(false,"User was not created");
+        }
+        else
+        {
+            return new Action(true,"Created");
+        }
     }
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
-    public Auth authPost(@RequestParam String email, @RequestParam String password)
+    public Action auth(@RequestParam String email, @RequestParam String password,
+                           HttpServletRequest request, HttpServletResponse response)
     {
         boolean foundUser = findUser(email, password);
-        return new Auth(foundUser,"Authenticating...");
+
+        if (!foundUser)
+        {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return new Action(foundUser,"Authentication failed; Invalid email or password");
+        }
+
+        return new Action(foundUser,"Authentication success!");
     }
 
 
     public boolean findUser(String email, String password)
     {
-
         String sql = "SELECT email, pass FROM user_data WHERE email = ?";
 
         List<User> users = jdbcTemplate.query(sql, new Object[] { email }, new UserRowMapper());
@@ -88,9 +119,9 @@ public class AuthController
         (?=.*[A-Z]) an upper case letter must occur at least once
         (?=.*[@#$%^&+=]) a special character must occur at least once
         (?=\\S+$) no whitespace allowed in the entire string
-        .{8,128} at least 8 characters but no more than 128
+        .{8,128} at least 8 characters
          */
-        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,128}";
+        String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
         return pwd.matches(pattern);
     }
 
@@ -101,12 +132,13 @@ public class AuthController
 
 
 
-    public void setNewUser(String email, String pwd)
+    public boolean setNewUser(String email, String pwd)
     {
         String sql = "INSERT INTO user_data (id, email,pass) VALUES (DEFAULT,?,?);";
 
         String encodedPwd = encodePassword(pwd);
-        jdbcTemplate.update(sql,new Object[]{email,encodedPwd});
+        int rowsUpdated = jdbcTemplate.update(sql,new Object[]{email,encodedPwd});
+        return rowsUpdated == 1;
     }
 
 
